@@ -16,6 +16,19 @@ streamlit run streamlit_app.py
 
 5. Open the link Streamlit gives you in your browser
 
+## REST API
+
+The system also exposes a REST API (`api.py`, built with FastAPI) alongside the Streamlit UI, covering the same functionality:
+
+- `GET /health` — health check, confirms the server is running
+- `POST /query` — accepts `{"question": "..."}`, returns the LLM-generated answer
+- `GET /anomalies` — returns stuck high-priority tickets and unusually slow resolutions as JSON
+
+Run it with: uvicorn api:app --reload
+
+Interactive API documentation (Swagger UI) is available at `/docs` once running, where each endpoint can be tested directly.
+
+
 ## Architecture
 
 - `data_loader.py` — loads and prepares the support ticket CSV data
@@ -24,6 +37,7 @@ streamlit run streamlit_app.py
 - Tickets with resolution times more than double the average
 - `llm_query.py` — takes a natural language question, sends it to an LLM (via Groq, using the `openai/gpt-oss-120b` model, free tier), which generates a line of pandas code to answer it; that code is then executed against the data
 - `streamlit_app.py` — the web interface tying everything together: a text box for questions, and a button to view anomalies
+- `api.py` — FastAPI REST API exposing the same functionality (health check, NL query, anomalies) as JSON endpoints
 
 ## Tools used
 
